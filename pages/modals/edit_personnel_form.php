@@ -267,21 +267,21 @@ if (!$personnel) {
                         value="<?= htmlspecialchars($personnel['date_optional_retirement']) ?>">
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label fw-bold">Date Compulsory Retirement</label>
+                    <label class="form-label fw-bold">Date Compulsary Retirement</label>
                     <input type="date" class="form-control" name="date_compulsory_retirement"
-                        value="<?= htmlspecialchars($personnel['date_compulsory_retirement']) ?>">
+                        value="<?= htmlspecialchars($personnel['date_compulsory_retirement']) ?>" readonly>
                 </div>
             </div>
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label class="form-label fw-bold">ETE</label>
-                    <input type="text" class="form-control" name="ete"
+                    <input type="date" class="form-control" name="ete"
                         value="<?= htmlspecialchars($personnel['ete']) ?>">
                 </div>
                 <div class="col-md-6">
-                    <label class="form-label fw-bold">Current ETE</label>
-                    <input type="text" class="form-control" name="current_ete"
-                        value="<?= htmlspecialchars($personnel['current_ete']) ?>">
+                    <label class="form-label fw-bold">Midyear</label>
+                    <input type="date" class="form-control" name="midyear"
+                        value="<?= htmlspecialchars($personnel['midyear']) ?>">
                 </div>
             </div>
             <div class="row mb-3">

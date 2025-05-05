@@ -47,7 +47,7 @@ function col($label, $value)
 
 <div class="modal-header bg-navy text-white align-items-center">
     <h5 class="modal-title flex-grow-1">
-        <?= strtoupper($type) ?> PROFILE -
+        <?= strtoupper($type === 'Enlistment' ? 'Enlisted Personnel' : $type) ?> PROFILE -
         <?= strtoupper(htmlspecialchars($person['first_name'] . ' ' . $person['last_name'])) ?>
     </h5>
     <?php if (!empty($person['photo'])): ?>
@@ -162,7 +162,7 @@ function col($label, $value)
             <?php col('Date Optional Retirement', $person['date_optional_retirement']);
             col('Date Compulsory Retirement', $person['date_compulsory_retirement']); ?>
             <?php col('ETE', $person['ete']);
-            col('Current ETE', $person['current_ete']);
+            col('Midyear', $person['midyear']);
             col('Length of Service', $person['length_of_service']); ?>
             <?php col('Authority/Effectively', $person['authority_effectively']);
             col('Years Long Pay', $person['years_long_pay']); ?>

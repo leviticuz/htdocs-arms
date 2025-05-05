@@ -18,7 +18,7 @@
             <select class="form-select" name="entry_type" id="entryType" required>
                 <option value="" selected disabled>Select Entry Type</option>
                 <option value="Officer">Officer</option>
-                <option value="Enlistment">Enlistment</option>
+                <option value="Enlistment">Enlisted Personnel</option>
             </select>
         </div>
     </div>
@@ -314,7 +314,9 @@
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <label class="form-label fw-bold">Date Entered Mil Service</label>
-                        <input type="date" class="form-control" name="date_entered_mil_service" required>
+                        <input type="date" class="form-control" name="date_entered_mil_service" id="enteredMilService"
+                            required>
+
                     </div>
                     <div class="col-md-4">
                         <label class="form-label fw-bold">Date Enlist/CAD</label>
@@ -359,22 +361,24 @@
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label fw-bold">Date Optional Retirement</label>
-                        <input type="date" class="form-control" name="date_optional_retirement" required>
+                        <input type="date" class="form-control" name="date_optional_retirement" id="optionalRetirement"
+                            required>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Date Compulsory Retirement</label>
-                        <input type="date" class="form-control" name="date_compulsory_retirement" required>
+                        <label class="form-label fw-bold">Date Compulsary Retirement</label>
+                        <input type="date" class="form-control" name="date_compulsory_retirement"
+                            id="compulsoryRetirement" readonly required>
                     </div>
                 </div>
 
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label class="form-label fw-bold">ETE</label>
-                        <input type="text" class="form-control" name="ete" required>
+                        <input type="date" class="form-control" name="ete" required>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label fw-bold">Current ETE</label>
-                        <input type="text" class="form-control" name="current_ete" required>
+                        <label class="form-label fw-bold">Midyear</label>
+                        <input type="date" class="form-control" name="midyear" required>
                     </div>
                 </div>
                 <div class="row mb-3">
@@ -727,5 +731,31 @@
 
         entryTypeSelect.addEventListener("change", updateVisibilityByEntryType);
 
+
+        document.getElementById("enteredMilService").addEventListener("change", function () {
+            const enteredDate = new Date(this.value);
+
+            if (!isNaN(enteredDate.getTime())) {
+                const optionalRetirementMin = new Date(enteredDate);
+                optionalRetirementMin.setFullYear(optionalRetirementMin.getFullYear() + 20);
+
+                const compulsoryRetirement = new Date(enteredDate);
+                compulsoryRetirement.setFullYear(compulsoryRetirement.getFullYear() + 58);
+
+                function formatDate(date) {
+                    const yyyy = date.getFullYear();
+                    const mm = String(date.getMonth() + 1).padStart(2, '0');
+                    const dd = String(date.getDate()).padStart(2, '0');
+                    return `${yyyy}-${mm}-${dd}`;
+                }
+
+                // Set min for optional retirement
+                document.getElementById("optionalRetirement").min = formatDate(optionalRetirementMin);
+
+                // Auto-fill compulsory retirement
+                document.getElementById("compulsoryRetirement").value = formatDate(compulsoryRetirement);
+            }
+
+        });
     });
 </script>

@@ -44,6 +44,49 @@ include("../api/get_asset.php");
                             Add Personnel
                         </button>
                     </div>
+                    <button class="btn btn-outline-primary mb-3" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#filterPanel">
+                        Show Filters
+                    </button>
+                    <div class="collapse" id="filterPanel">
+                        <div class="card card-body mb-3">
+                            <form id="filterForm" class="row g-3">
+                                <div class="col-md-3">
+                                    <label class="form-label">Entry Type</label>
+                                    <select class="form-select" name="entry_type">
+                                        <option value="">All</option>
+                                        <option value="Officer">Officer</option>
+                                        <option value="Enlistment">Enlistment</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Rank</label>
+                                    <input type="text" class="form-control" name="rank">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Gender</label>
+                                    <select class="form-select" name="gender">
+                                        <option value="">All</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Birthday (From)</label>
+                                    <input type="date" class="form-control" name="birthday_from">
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Birthday (To)</label>
+                                    <input type="date" class="form-control" name="birthday_to">
+                                </div>
+                                <!-- Add more filters as needed -->
+                                <div class="col-12">
+                                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                                    <button type="reset" class="btn btn-secondary">Reset</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
 
                     <div id="tableContainer" class="table-responsive">
                         <table class="table table-bordered text-center align-middle">
@@ -65,7 +108,10 @@ include("../api/get_asset.php");
                                             <td><?= htmlspecialchars($asset['contact_number']) ?></td>
                                             <td><?= htmlspecialchars($asset['last_name']) . ", " . htmlspecialchars($asset['first_name']) . " " . htmlspecialchars($asset['middle_name']) ?>
                                             </td>
-                                            <td><?= htmlspecialchars($asset['entry_type']) ?></td>
+                                            <td>
+                                                <?= htmlspecialchars($asset['entry_type'] === 'Enlistment' ? 'Enlisted Personnel' : $asset['entry_type']) ?>
+                                            </td>
+
                                             <!-- Updated Actions Column in Table -->
                                             <td class="text-center">
                                                 <a href="#" class="btn btn-success btn-sm view-details"

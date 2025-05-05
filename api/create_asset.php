@@ -72,7 +72,7 @@ try {
         'date_optional_retirement',
         'date_compulsory_retirement',
         'ete',
-        'current_ete',
+        'midyear',
         'length_of_service',
         'authority_effectively',
         'years_long_pay',
