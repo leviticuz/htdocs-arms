@@ -45,18 +45,15 @@ if ($page == 'login.php' && isset($_SESSION['username'])) {
     <header class="fixed-top bg-navy text-white py-3 shadow-sm">
         <div class="container-fluid d-flex justify-content-between align-items-center px-4">
             <div class="fs-4 fw-bold">NAVMETOC Human Resources Management System (HRMS)</div>
-
             <?php if (isset($_SESSION['username'])): ?>
                 <!-- Only show if user is logged in -->
-                <div class="d-flex align-items-center gap-2 dropdown">
-                    <div class="text-end">
-                        <div class="fw-bold text-uppercase"><?= htmlspecialchars($_SESSION['username']) ?></div>
-                    </div>
-                    <i class="fa-solid fa-caret-down" data-bs-toggle="dropdown" aria-expanded="false"
-                        style="cursor:pointer;"></i>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item" href="../api/logout.php"><i class="fa-solid fa-sign-out-alt"></i>
-                                Logout</a></li>
+                <div class="dropdown text-end">
+                    <button class="btn btn-outline-light dropdown-toggle text-uppercase fw-bold" type="button"
+                        id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                        <?= htmlspecialchars($_SESSION['username']) ?>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item" href="../api/logout.php">Logout</a></li>
                     </ul>
                 </div>
             <?php endif; ?>

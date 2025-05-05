@@ -7,7 +7,6 @@ $type = $_GET['type'] ?? null;
 if (!$id || !in_array($type, ['Officer', 'Enlistment'])) {
     exit('<div class="p-3 text-danger">Invalid or missing ID/type.</div>');
 }
-
 $table = $type === 'Officer' ? 'officer_records' : 'enlistment_records';
 
 $stmt = $pdo->prepare("SELECT * FROM `$table` WHERE id = ?");
@@ -37,15 +36,28 @@ function col($label, $value)
         background: linear-gradient(90deg, #002B5C, #11315A);
     }
 
+    .profile-photo {
+        width: 120px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 6px;
+        border: 2px solid #fff;
+    }
 </style>
 
-<div class="modal-header bg-navy text-white">
-    <h5 class="modal-title"><?= strtoupper($type) ?> PROFILE -
-        <?= strtoupper(htmlspecialchars($person['first_name'] . ' ' . $person['last_name'])) ?></h5>
-    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+<div class="modal-header bg-navy text-white align-items-center">
+    <h5 class="modal-title flex-grow-1">
+        <?= strtoupper($type) ?> PROFILE -
+        <?= strtoupper(htmlspecialchars($person['first_name'] . ' ' . $person['last_name'])) ?>
+    </h5>
+    <?php if (!empty($person['photo'])): ?>
+        <img src="/uploads/photos/<?= htmlspecialchars($person['photo']) ?>" alt="Profile Photo" class="profile-photo ms-3">
+    <?php endif; ?>
+    <button type="button" class="btn-close btn-close-white ms-3" data-bs-dismiss="modal" aria-label="Close"></button>
 </div>
+
 <div class="modal-body bg-light p-4 text-uppercase" style="max-height: 70vh; overflow-y: auto;">
-    <div class="card shadow-sm mb-4"> 
+    <div class="card shadow-sm mb-4">
         <div class="card-header bg-secondary text-white">A. PERSONAL DETAILS</div>
         <div class="card-body row g-3">
             <?php col('First Name', $person['first_name']);
@@ -160,13 +172,24 @@ function col($label, $value)
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-secondary text-white">G. ASSIGNMENT INFORMATION</div>
         <div class="card-body row g-3">
-            <?php col('Primary Duty', $person['present_duty_primary']);
+            <?php
+            col('Primary Duty', $person['present_duty_primary']);
+            // Collateral Duties
+            col('Collateral Duty 1', $person['present_duty_collateral1']);
+            col('Collateral Duty 2', $person['present_duty_collateral2']);
+            col('Collateral Duty 3', $person['present_duty_collateral3']);
+            col('Collateral Duty 4', $person['present_duty_collateral4']);
+            col('Collateral Duty 5', $person['present_duty_collateral5']);
+            col('Collateral Duty 6', $person['present_duty_collateral6']);
             col('Position', $person['position_designation']);
-            col('Losing Unit', $person['losing_unit']); ?>
-            <?php col('Years Sea Duty', $person['sea_duty_years']);
-            col('Total Field Duty', $person['field_duty_total']); ?>
+            col('Losing Unit', $person['losing_unit']);
+            col('Years Sea Duty', $person['sea_duty_years']);
+            col('Total Field Duty', $person['field_duty_total']);
+
+            ?>
         </div>
     </div>
+
 
     <div class="card shadow-sm mb-4">
         <div class="card-header bg-secondary text-white">H. EDUCATION & TRAINING</div>

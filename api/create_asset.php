@@ -24,15 +24,77 @@ try {
     // Base SQL and fields
     $table = $entryType === 'Officer' ? 'officer_records' : 'enlistment_records';
     $fields = [
-        'first_name', 'last_name', 'middle_name', 'birthday', 'birthplace', 'gender', 'religion', 'ethnic_group', 'marital_status',
-        'address', 'email', 'contact_number', 'height', 'weight', 'blood_type', 'eye_color', 'hair_color', 'complexion', 'body_built',
-        'other_markings', 'shoes_fit', 'tshirt_size', 'shorts_size', 'waistline', 'headgear_size', 'combatboots_size', 'sbdu_size',
-        'rank', 'militaryidenumber', 'physical_profile', 'grade', 'rating', 'csc_eligibility', 'tin', 'philhealth', 'pagibig', 'passport',
-        'date_entered_mil_service', 'date_enlist_cad', 'source_of_commission', 'date_appointed', 'date_enlisted', 'date_last_reenlistment',
-        'date_last_promex', 'date_last_promotion', 'date_optional_retirement', 'date_compulsory_retirement', 'ete', 'current_ete',
-        'length_of_service', 'authority_effectively', 'years_long_pay', 'present_duty_primary', 'position_designation', 'losing_unit',
-        'sea_duty_years', 'field_duty_total', 'mil_career_course', 'civilian_course', 'last_pft_result', 'edrd', 'date_actual_report',
-        'date_carried_mr', 'authority'
+        'first_name',
+        'last_name',
+        'middle_name',
+        'birthday',
+        'birthplace',
+        'gender',
+        'religion',
+        'ethnic_group',
+        'marital_status',
+        'address',
+        'email',
+        'contact_number',
+        'height',
+        'weight',
+        'blood_type',
+        'eye_color',
+        'hair_color',
+        'complexion',
+        'body_built',
+        'other_markings',
+        'shoes_fit',
+        'tshirt_size',
+        'shorts_size',
+        'waistline',
+        'headgear_size',
+        'combatboots_size',
+        'sbdu_size',
+        'rank',
+        'militaryidenumber',
+        'physical_profile',
+        'grade',
+        'rating',
+        'csc_eligibility',
+        'tin',
+        'philhealth',
+        'pagibig',
+        'passport',
+        'date_entered_mil_service',
+        'date_enlist_cad',
+        'source_of_commission',
+        'date_appointed',
+        'date_enlisted',
+        'date_last_reenlistment',
+        'date_last_promex',
+        'date_last_promotion',
+        'date_optional_retirement',
+        'date_compulsory_retirement',
+        'ete',
+        'current_ete',
+        'length_of_service',
+        'authority_effectively',
+        'years_long_pay',
+        'present_duty_primary',
+        'present_duty_collateral1',
+        'present_duty_collateral2',
+        'present_duty_collateral3',
+        'present_duty_collateral4',
+        'present_duty_collateral5',
+        'present_duty_collateral6',
+        'position_designation',
+        'losing_unit',
+        'sea_duty_years',
+        'field_duty_total',
+        'mil_career_course',
+        'civilian_course',
+        'last_pft_result',
+        'edrd',
+        'date_actual_report',
+        'date_carried_mr',
+        'authority',
+        'photo'  // Include 'photo'
     ];
 
     // Add Officer-only fields
@@ -40,6 +102,35 @@ try {
         $fields[] = 'cad_status';
         $fields[] = 'fos';
         $fields[] = 'fos_order';
+    }
+
+    // Handle photo upload
+    if (isset($_FILES['photo']) && $_FILES['photo']['error'] === UPLOAD_ERR_OK) {
+        $fileTmpPath = $_FILES['photo']['tmp_name'];
+        $fileName = $_FILES['photo']['name'];
+        $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+        if (!in_array($fileExtension, $allowedExtensions)) {
+            throw new Exception('Invalid image format. Allowed formats: jpg, jpeg, png, gif.');
+        }
+
+        $newFileName = uniqid('photo_', true) . '.' . $fileExtension;
+        $uploadDir = __DIR__ . '/../uploads/photos/';
+
+        if (!file_exists($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+
+        $destPath = $uploadDir . $newFileName;
+
+        if (!move_uploaded_file($fileTmpPath, $destPath)) {
+            throw new Exception('Failed to save uploaded photo.');
+        }
+
+        $_POST['photo'] = $newFileName; // set photo filename for DB
+    } else {
+        throw new Exception('Photo upload error or missing photo.');
     }
 
     $placeholders = array_map(fn($f) => ":$f", $fields);

@@ -63,13 +63,24 @@ include("../api/get_asset.php");
                                         <tr>
                                             <td><?= $ctr++ ?></td>
                                             <td><?= htmlspecialchars($asset['contact_number']) ?></td>
-                                            <td><?= htmlspecialchars($asset['last_name']) . ", " . htmlspecialchars($asset['first_name']) . " " . htmlspecialchars($asset['middle_name']) ?></td>
+                                            <td><?= htmlspecialchars($asset['last_name']) . ", " . htmlspecialchars($asset['first_name']) . " " . htmlspecialchars($asset['middle_name']) ?>
+                                            </td>
                                             <td><?= htmlspecialchars($asset['entry_type']) ?></td>
+                                            <!-- Updated Actions Column in Table -->
                                             <td class="text-center">
                                                 <a href="#" class="btn btn-success btn-sm view-details"
-                                                   data-id="<?= $asset['id'] ?>" data-type="<?= $asset['entry_type'] ?>">
-                                                    <i class="bi bi-eye"></i> View
+                                                    data-id="<?= $asset['id'] ?>" data-type="<?= $asset['entry_type'] ?>">
+                                                    <i class="bi bi-eye"></i>
                                                 </a>
+                                                <a href="#" class="btn btn-warning btn-sm edit-details"
+                                                    data-id="<?= $asset['id'] ?>" data-type="<?= $asset['entry_type'] ?>">
+                                                    <i class="bi bi-pencil-square"></i>
+                                                </a>
+                                                <a href="#" class="btn btn-danger btn-sm delete-personnel"
+                                                    data-id="<?= $asset['id'] ?>" data-type="<?= $asset['entry_type'] ?>">
+                                                    <i class="bi bi-trash"></i>
+                                                </a>
+
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
@@ -86,7 +97,8 @@ include("../api/get_asset.php");
         </div>
 
         <!-- Modal: Add Personnel -->
-        <div class="modal fade" id="addPersonnelModal" tabindex="-1" aria-labelledby="addPersonnelModalLabel" aria-hidden="true">
+        <div class="modal fade" id="addPersonnelModal" tabindex="-1" aria-labelledby="addPersonnelModalLabel"
+            aria-hidden="true">
             <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -106,27 +118,129 @@ include("../api/get_asset.php");
                 <div class="modal-content" id="personnelDetailsContent"></div>
             </div>
         </div>
+
+        <!-- Modal: Edit Personnel -->
+        <div class="modal fade" id="editPersonnelModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                <div class="modal-content" id="editPersonnelContent"></div>
+            </div>
+        </div>
     </main>
 </div>
 
 <script src="../assets/js/assets.js" defer></script>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
-        document.querySelectorAll('.view-details').forEach(btn => {
+        document.getElementById('tableContainer').addEventListener('click', function (e) {
+            const btn = e.target.closest('.view-details');
+            if (!btn) return;
+
+            e.preventDefault();
+
+            const id = btn.getAttribute('data-id');
+            const type = btn.getAttribute('data-type');
+
+            if (!id || !type) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Missing Data',
+                    text: 'Personnel ID or Type is missing.',
+                });
+                return;
+            }
+
+            fetch(`modals/personnel_details.php?id=${encodeURIComponent(id)}&type=${encodeURIComponent(type)}&t=${Date.now()}`)
+                .then(res => res.text())
+                .then(html => {
+                    document.getElementById('personnelDetailsContent').innerHTML = html;
+                    new bootstrap.Modal(document.getElementById('personnelDetailsModal')).show();
+                })
+                .catch(err => {
+                    console.error(err);
+                    Swal.fire('Error', 'Could not load personnel details.', 'error');
+                });
+        });
+    });
+
+</script>
+
+<!-- JavaScript for handling Edit button -->
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.edit-details').forEach(btn => {
             btn.addEventListener('click', e => {
                 e.preventDefault();
                 const id = btn.getAttribute('data-id');
                 const type = btn.getAttribute('data-type');
-                const modal = new bootstrap.Modal(document.getElementById('personnelDetailsModal'));
-                fetch(`modals/personnel_details.php?id=${id}&type=${type}`)
+                const modal = new bootstrap.Modal(document.getElementById('editPersonnelModal'));
+
+                fetch(`modals/edit_personnel_form.php?id=${id}&type=${type}`)
                     .then(res => res.text())
                     .then(html => {
-                        document.getElementById('personnelDetailsContent').innerHTML = html;
+                        const container = document.getElementById('editPersonnelContent');
+                        container.innerHTML = html;
+
+                        // ✅ Re-evaluate all <script> tags manually
+                        const scripts = container.querySelectorAll("script");
+                        scripts.forEach((oldScript) => {
+                            const newScript = document.createElement("script");
+                            if (oldScript.src) {
+                                newScript.src = oldScript.src;
+                            } else {
+                                newScript.textContent = oldScript.textContent;
+                            }
+                            document.body.appendChild(newScript);
+                            oldScript.remove();
+                        });
+
                         modal.show();
                     });
             });
         });
     });
+
 </script>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        document.querySelectorAll('.delete-personnel').forEach(btn => {
+            btn.addEventListener('click', e => {
+                e.preventDefault();
+                const id = btn.getAttribute('data-id');
+                const type = btn.getAttribute('data-type');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "This will permanently delete the personnel record.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        fetch('../api/delete_personnel.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: `id=${id}&type=${type}`
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                Swal.fire({
+                                    icon: data.status,
+                                    title: data.status.charAt(0).toUpperCase() + data.status.slice(1),
+                                    text: data.message,
+                                }).then(() => location.reload());
+                            });
+                    }
+                });
+            });
+        });
+    });
+</script>
+
+
 </body>
+
 </html>

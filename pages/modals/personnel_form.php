@@ -11,7 +11,7 @@
         box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
     }
 </style>
-<form action="../api/create_asset.php" method="POST" id="multiStepForm">
+<form action="../api/create_asset.php" method="POST" id="multiStepForm" enctype="multipart/form-data">
     <div class="row mb-3 justify-content-end">
         <div class="col-md-4 text-end">
             <label for="entryType" class="form-label fw-bold">Entry Type</label>
@@ -231,7 +231,7 @@
                     </div>
                     <div class="col-md-4">
                         <label for="physicalprofile" class="form-label fw-bold">Physical Profile</label>
-                        <select class="form-select" id="physicalprofile" name="physicalprofile" required>
+                        <select class="form-select" id="physicalprofile" name="physical_profile" required>
                             <option selected disabled value="">Select Profile</option>
                             <option value="P1">P1</option>
                             <option value="P2">P2</option>
@@ -408,31 +408,31 @@
                 <div class="row">
                     <div class="col-md-6">
                         <label class="form-label">Collateral</label>
-                        <input type="text" class="form-control" name="present_duty_collateral">
+                        <input type="text" class="form-control" name="present_duty_collateral1">
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Collateral</label>
-                        <input type="text" class="form-control" name="present_duty_collateral">
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <label class="form-label">Collateral</label>
-                        <input type="text" class="form-control" name="present_duty_collateral">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">Collateral</label>
-                        <input type="text" class="form-control" name="present_duty_collateral">
+                        <input type="text" class="form-control" name="present_duty_collateral2">
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-6">
                         <label class="form-label">Collateral</label>
-                        <input type="text" class="form-control" name="present_duty_collateral">
+                        <input type="text" class="form-control" name="present_duty_collateral3">
                     </div>
                     <div class="col-md-6">
                         <label class="form-label">Collateral</label>
-                        <input type="text" class="form-control" name="present_duty_collateral">
+                        <input type="text" class="form-control" name="present_duty_collateral4">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label class="form-label">Collateral</label>
+                        <input type="text" class="form-control" name="present_duty_collateral5">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">Collateral</label>
+                        <input type="text" class="form-control" name="present_duty_collateral6">
                     </div>
                 </div>
 
@@ -536,6 +536,12 @@
                     <button type="button" class="btn btn-outline-primary w-100" id="add-dependent-btn">
                         <i class="bi bi-plus-circle me-2"></i>Add Dependent
                     </button>
+                </div>
+            </div>
+            <div class="row mb-3 border rounded shadow-sm p-3">
+                <div class="col-md-12 text-center">
+                    <label class="form-label fw-bold">Upload Photo</label>
+                    <input type="file" class="form-control" name="photo" accept="image/*" required>
                 </div>
             </div>
             <button type="button" class="btn btn-secondary prev-step">Back</button>
